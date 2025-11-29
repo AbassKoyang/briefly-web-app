@@ -3,6 +3,11 @@ import { Geist, Geist_Mono, Nunito_Sans } from "next/font/google";
 import "./globals.css";
 import SideBar from "@/components/SideBar";
 import NavBar from "@/components/NavBar";
+import AuthProvider from "@/hooks/auth";
+import { Toaster } from "@/components/ui/sonner"
+import QueryProvider from "@/lib/tanstackConfig";
+import { SearchProvider } from "@/hooks/search";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,13 +52,20 @@ export default function RootLayout({
 
       </head>
       <body
-        className={`${nunitosans.variable} font-[var(--font-raleway)] antialiased w-dvw h-dvh overflow-x-hidden flex bg-white`}
+        className={`${nunitosans.variable} font-[var(--font-raleway)] antialiased w-dvw h-dvh overflow-hidden flex bg-white`}
       >
-        <SideBar />
-        <section className="h-full w-[85%] bg-light-blue">
-          <NavBar />
-        {children}
-        </section>
+        <AuthProvider>
+          <QueryProvider>
+            <SearchProvider>
+            <SideBar />
+            <section className="min-h-full w-[80%] bg-light-blue">
+              <NavBar />
+            {children}
+            </section>
+            <Toaster/>
+            </SearchProvider>
+          </QueryProvider>
+        </AuthProvider>
       </body>
     </html>
   );
