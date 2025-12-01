@@ -1,20 +1,25 @@
 'use client'
-import { LoaderCircle, Plus, Search, UserRoundPlus } from 'lucide-react'
+import { LoaderCircle, LogOut, Plus, Search, UserRoundPlus } from 'lucide-react'
 import React, { useState } from 'react'
 import RetryToast from './RetryToast';
 import { toast } from 'sonner';
 import { toastStyles } from '@/utils';
-import { GoogleAuthProvider } from 'firebase/auth';
+import { GoogleAuthProvider, signOut } from 'firebase/auth';
 import { signInWithPopup } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useAuth } from '@/hooks/auth';
 import Image from 'next/image';
+import { useSearchContext } from '@/hooks/search';
 
 const NavBar = () => {
+    const {searchQuery, setSearchQuery} = useSearchContext();
     const {user} = useAuth();
     const [loading, setLoading] = useState(false);
+    const [isSignOutOpen, setIsSignOutOpen] = useState(false);
     const provider = new GoogleAuthProvider();
-    console.log(user);
+    const handleSignOut = async () => {
+         await signOut(auth);
+    }
     const handleSignUp = async () => {
         try {
             console.log("Clickeddd")
@@ -85,7 +90,8 @@ const NavBar = () => {
     <header className='w-full bg-white py-2 px-8 flex items-center justify-between'>
         <div className="border-1 border-gray-300 rounded-lg overflow-hidden w-[300px] group focus-within:border-gray-600 flex items-center justify-between px-4 transition-all duration-200 ease-in-out">
             <Search className='group-focus-within:text-gray-800 text-gray-500 size-[16px] transition-all duration-200 ease-in-out' />
-            <input type="text" className="w-[90%] h-[40px] px-2 text-sm text-gray-800 font-nunito-sans placeholder:text-gray-500 border-0 stroke-0 outline-0 transition-all duration-200 ease-in-out" placeholder='Search by title...'/>
+            <input type="text"                 value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)} className="w-[90%] h-[40px] px-2 text-sm text-gray-800 font-nunito-sans placeholder:text-gray-500 border-0 stroke-0 outline-0 transition-all duration-200 ease-in-out" placeholder='Search by title...'/>
         </div>
 
         <div className="">
@@ -95,9 +101,17 @@ const NavBar = () => {
                             <Plus className='size-[18px] text-white' />
                             <span>Add Bookmark</span>
                         </button>
-                        <div className='size-[40px] rounded-full overflow-hidden'>
-                        <Image src={user.photo} width={40} height={40} alt='Profile picture' className='object-cover object-center' />
-                         </div>
+                        <div onClick={() => setIsSignOutOpen(!isSignOutOpen)} className=" relative">
+                            <div className='size-[40px] rounded-full overflow-hidden'>
+                            <Image src={user.photo} width={40} height={40} alt='Profile picture' className='object-cover object-center' />
+                            </div>
+                           {isSignOutOpen && (
+                             <button onClick={handleSignOut} className='absolute right-0 bottom-[-45px] px-2 py-1.5 bg-white font-raleway font-medium text-red-500 text-sm flex items-center justify-center gap-2 rounded-md border-gray-200 border w-[100px]'>
+                             <span>Sign Out</span>
+                             <LogOut className='size-[14px] text-red-500' />
+                            </button>
+                           )}
+                        </div>
                     </div>
             ) : (
                     <button onClick={() => handleSignUp()} className='px-4 py-2 rounded-md bg-dark-blue text-white font-medium font-raleway text-sm flex items-center gap-1.5 cursor-pointer'>

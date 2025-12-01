@@ -6,7 +6,7 @@ photo: string;
 uid: string;
 }
 export type BookmarkType = {
-    id: string;
+    id?: string;
     url: string;
     title: string;
     subTitle: string;
@@ -14,7 +14,9 @@ export type BookmarkType = {
     summary: string;
     userId: string;
     favicon: string;
-    createdAt: Date;
+    createdAt: number;
+    pinned: false;
+    lastViewed: number;
 };
 export type PageParam = unknown;
 

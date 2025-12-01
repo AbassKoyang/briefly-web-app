@@ -1,7 +1,7 @@
 
 const BookmarkSkeleton = () => {
   return (
-    <div className="w-[300px] p-4 bg-gray-200 border-gray-300 border rounded-[10px]">
+    <div className="w-[320px] p-4 bg-gray-200 border-gray-300 border rounded-[10px]">
             <div className="w-full flex items-start justify-between">
                 <div className="flex gap-3">
                 <div className="size-[40px] rounded-lg skeleton"></div>
@@ -22,11 +22,15 @@ const BookmarkSkeleton = () => {
                     <div className="w-[60px] h-[20px] rounded-md skeleton"></div>
                 </div>
             </div>
+            
+            <div className="w-full flex items-center justify-between mt-3">
+                <div className="w-full flex items-center gap-3">
+                        <div className="w-[30px] h-[20px] rounded-sm skeleton"></div>
+                        <div className="w-[30px] h-[20px] rounded-sm skeleton"></div>
+                        <div className="w-[30px] h-[20px] rounded-sm skeleton"></div>
+                </div>
 
-            <div className="w-full flex items-center gap-3 mt-3">
-                    <div className="w-[30px] h-[20px] rounded-md skeleton"></div>
-                    <div className="w-[30px] h-[20px] rounded-md skeleton"></div>
-                    <div className="w-[30px] h-[20px] rounded-md skeleton"></div>
+                <div className="w-[20px] h-[20px] rounded-sm skeleton"></div>
             </div>
     </div>  
   )

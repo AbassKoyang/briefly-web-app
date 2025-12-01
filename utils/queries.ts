@@ -2,7 +2,7 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { fetchUserBookmarks } from "./api";
 import { fetchUserBookmarksReturnType } from "@/types";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 5;
 export const useFetchBookmarks= (userId: string) => {
     return useInfiniteQuery<fetchUserBookmarksReturnType, Error>({
       queryKey: ['bookmarks', userId],
