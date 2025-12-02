@@ -10,12 +10,14 @@ import { auth } from '@/lib/firebase';
 import { useAuth } from '@/hooks/auth';
 import Image from 'next/image';
 import { useSearchContext } from '@/hooks/search';
+import Form from './Form';
 
 const NavBar = () => {
     const {searchQuery, setSearchQuery} = useSearchContext();
     const {user} = useAuth();
     const [loading, setLoading] = useState(false);
     const [isSignOutOpen, setIsSignOutOpen] = useState(false);
+    const [isFormOpen, setIsFormOpen] = useState(false);
     const provider = new GoogleAuthProvider();
     const handleSignOut = async () => {
          await signOut(auth);
@@ -97,7 +99,7 @@ const NavBar = () => {
         <div className="">
             {user ? (
                     <div className='flex items-center gap-2'>
-                        <button className='px-4 py-2 rounded-md bg-dark-blue text-white font-medium font-raleway text-sm flex items-center gap-1.5 cursor-pointer'>
+                        <button onClick={() => setIsFormOpen(true)} className='px-4 py-2 rounded-md bg-dark-blue text-white font-medium font-raleway text-sm flex items-center gap-1.5 cursor-pointer'>
                             <Plus className='size-[18px] text-white' />
                             <span>Add Bookmark</span>
                         </button>
@@ -128,6 +130,9 @@ const NavBar = () => {
                     </button>
             )}
         </div>
+
+        <Form isopen={isFormOpen} closeModal={() => setIsFormOpen(false)} />
+
     </header>
   )
 }

@@ -1,13 +1,12 @@
 'use client';
 import Bookmark from "@/components/Bookmark";
 import BookmarkSkeleton from "@/components/BookmarkSkeleton";
-import EmptyBookmarks from "@/components/EmptyBookmarks";
+import EmptyArchive from "@/components/EmptyArchive";
 import PinnedBookmarksSection from "@/components/PinnedBookmarksSection";
 import { useAuth } from "@/hooks/auth";
 import { useSearchContext } from "@/hooks/search";
-import { useFetchBookmarks, useFetchPinnedBookmarks } from "@/utils/queries";
+import { useFetchArchivedBookmarks, useFetchBookmarks, useFetchPinnedBookmarks } from "@/utils/queries";
 import { ArrowDownUp, LoaderCircle } from "lucide-react";
-import Image from "next/image";
 import { useEffect, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
 
@@ -22,7 +21,7 @@ export default function Home() {
     isFetchingNextPage,
     isLoading,
     isError,
-    } = useFetchBookmarks(user?.uid || '');
+    } = useFetchArchivedBookmarks(user?.uid || '');
 
     useEffect(() => {
         if (inView && hasNextPage) {
@@ -43,11 +42,12 @@ export default function Home() {
              return hasMatchingTitleOrUrl;
         });
       }, [allBookmarks, searchQuery]);
+      console.log(filteredBookmarks);
     
   return (
     <div className="h-full bg-light-blue p-8">
       <div className="w-full flex justify-between items-start mb-3">
-        <h4 className="font-raleway font-semibold text-xl text-black">All Bookmarks</h4>
+        <h4 className="font-raleway font-semibold text-xl text-black">Archive</h4>
 
         <button className="py-1.5 px-3 bg-white border-gray-400 border rounded-md font-raleway font-semibold text-[14px] text-black flex items-center gap-2">
           <ArrowDownUp className="text-black size-[18px]" />
@@ -68,9 +68,9 @@ export default function Home() {
           <BookmarkSkeleton />
           <BookmarkSkeleton />
         </div>)}
+
         {filteredBookmarks && (
         <div className="w-full h-full max-h-full scrollbar-hide overflow-y-auto flex flex-wrap items-start justify-between gap-5 pb-[100px]">
-                <PinnedBookmarksSection />
           {filteredBookmarks.map((bm) => (
             <Bookmark bookmark={bm} />
           ))}
@@ -85,8 +85,9 @@ export default function Home() {
          </div>
         )}
 
+        
         {filteredBookmarks && filteredBookmarks.length == 0 && isLoading == false && (
-       <EmptyBookmarks />
+        <EmptyArchive />
         )}
     </div>
   );

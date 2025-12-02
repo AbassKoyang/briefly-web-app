@@ -7,6 +7,7 @@ import AuthProvider from "@/hooks/auth";
 import { Toaster } from "@/components/ui/sonner"
 import QueryProvider from "@/lib/tanstackConfig";
 import { SearchProvider } from "@/hooks/search";
+import Form from "@/components/Form";
 
 
 const geistSans = Geist({

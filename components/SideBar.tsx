@@ -12,13 +12,13 @@ const SideBar = () => {
             <h4 className='text-[24px] font-semibold text-dark-blue font-raleway'>Briefly</h4>
         </div>
         <div className='mt-8'>
-            <Link className={`${pathname == '/' ? 'bg-light-blue' : 'bg-transparent'} w-full py-2 px-3 rounded-lg group hover:bg-light-blue transition-colors duration-300 ease-in-out flex items-center gap-2`} href='#'>
+            <Link className={`${pathname == '/' ? 'bg-light-blue' : 'bg-transparent'} w-full py-2 px-3 rounded-lg group hover:bg-light-blue transition-colors duration-300 ease-in-out flex items-center gap-2`} href='/'>
             <House strokeWidth={2} className={`${pathname == '/' ? 'text-black' : 'text-gray-600'} size-[20px] group-hover:text-black transition-colors duration-300 ease-in-out`} />
             <p className={`${pathname == '/' ? 'text-black' : 'text-gray-600' } text-[16px] group-hover:text-black transition-colors duration-300 ease-in-out font-medium font-raleway`}>Home</p>
             </Link>
         </div>
         <div className='mt-2'>
-            <Link className={`${pathname == '/archived' ? 'bg-light-blue' : 'bg-transparent'} w-full py-2 px-3 rounded-lg group hover:bg-light-blue transition-colors duration-300 ease-in-out flex items-center gap-2`} href='#'>
+            <Link className={`${pathname == '/archived' ? 'bg-light-blue' : 'bg-transparent'} w-full py-2 px-3 rounded-lg group hover:bg-light-blue transition-colors duration-300 ease-in-out flex items-center gap-2`} href='/archived'>
             <Archive strokeWidth={2} className={`${pathname == '/archived' ? 'text-black' : 'text-gray-600'} size-[20px] group-hover:text-black transition-colors duration-300 ease-in-out`}/>
             <p className={`${pathname == '/archived' ? 'text-black' : 'text-gray-600' } text-[16px] group-hover:text-black transition-colors duration-300 ease-in-out font-medium font-raleway`}>Archived</p>
             </Link>
