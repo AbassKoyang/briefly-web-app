@@ -156,12 +156,10 @@ const NavBar = () => {
         </div>
 
         <Form isopen={isFormOpen} closeModal={() => setIsFormOpen(false)} />
-        {isSidebarOpen && (
-            <div className="w-[100vw] h-[100vh] fixed top-0 left-0 bg-white/30 backdrop-blur-xs flex items-start justify-start z-[1000]">
+            <div className={`w-[100vw] h-[100vh] fixed top-0 left-0 bg-white/30 backdrop-blur-xs flex items-start justify-start z-[1000] ${isSidebarOpen ? 'block' : 'hidden'}`}>
                 <div onClick={() => setIsSidebarOpen(false)} className="w-[100vw] h-[100vh] fixed top-0 left-0 bg-white/30 backdrop-blur-xs z-10"></div>
                 <MobileSideBar />
             </div>
-        )}
     </header>
   )
 }

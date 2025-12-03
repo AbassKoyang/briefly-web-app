@@ -76,7 +76,7 @@ export default function Home() {
         <div className="w-full flex justify-between items-start mb-3">
         <h4 className="font-raleway font-semibold text-xl text-black">All Bookmarks</h4>
 
-        <button className="py-1.5 px-3 bg-white border-gray-400 border rounded-md font-raleway font-semibold text-[14px] text-black flex items-center gap-2">
+        <button className="py-1.5 px-3 bg-white border-gray-200 border rounded-md font-raleway font-semibold text-[14px] text-black flex items-center gap-2">
           <ArrowDownUp className="text-black size-[18px]" />
           <span>Sort By</span>
         </button>
