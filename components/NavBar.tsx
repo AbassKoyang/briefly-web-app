@@ -40,6 +40,8 @@ const NavBar = () => {
          await signOut(auth);
     }
     const handleSignUp = async () => {
+        const API_URL = process.env.NEXT_PUBLIC_API_URL!;
+
         try {
             console.log("Clickeddd")
             setLoading(true);
@@ -50,7 +52,7 @@ const NavBar = () => {
                 try {
                     const idToken = await user.getIdToken();
                     console.log(idToken)
-                    const res = await fetch("http://localhost:4000/api/add-user", {
+                    const res = await fetch(`${API_URL}/api/add-user`, {
                         method: "POST",
                         headers: {
                           "Content-Type": "application/json",
@@ -106,12 +108,12 @@ const NavBar = () => {
     }; 
     
   return (
-    <header className='w-full bg-white py-3 lg:py-2 px-8 flex items-center justify-between'>
-        <div className="flex items-center gap-3">
+    <header className='w-full bg-white py-3 lg:py-2 px-4 lg:px-8 flex items-center justify-between'>
+        <div className="flex items-center gap-2">
         <button onClick={() => setIsSidebarOpen(true)} className="block lg:hidden p-2.5 bg-white border border-gray-300 rounded-md relative cursor-pointer">
             <Menu className='size-[20px] text-gray-800' />
         </button>
-            <div className="border-1 border-gray-300 rounded-lg overflow-hidden w-[250px] lg:w-[300px] group focus-within:border-gray-600 flex items-center justify-between px-4 transition-all duration-200 ease-in-out">
+            <div className="border-1 border-gray-300 rounded-lg overflow-hidden w-[200px] lg:w-[300px] group focus-within:border-gray-600 flex items-center justify-between px-4 transition-all duration-200 ease-in-out">
                 <Search className='group-focus-within:text-gray-800 text-gray-500 size-[16px] transition-all duration-200 ease-in-out' />
                 <input type="text"                 value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)} className="w-[90%] h-[40px] px-2 text-sm text-gray-800 font-nunito-sans placeholder:text-gray-500 border-0 stroke-0 outline-0 transition-all duration-200 ease-in-out" placeholder='Search by title...'/>
@@ -121,7 +123,7 @@ const NavBar = () => {
         <div className="">
             {user ? (
                     <div className='flex items-center gap-2'>
-                        <button onClick={() => setIsFormOpen(true)} className='px-4 py-2 rounded-md bg-dark-blue text-white font-medium font-raleway text-sm flex items-center gap-1.5 cursor-pointer'>
+                        <button onClick={() => setIsFormOpen(true)} className='px-2 lg:px-4 py-2 rounded-md bg-dark-blue text-white font-medium font-raleway text-sm flex items-center gap-1.5 cursor-pointer'>
                             <Plus className='size-[18px] text-white' />
                             <span className='hidden lg:block'>Add Bookmark</span>
                         </button>
@@ -147,7 +149,7 @@ const NavBar = () => {
                         ) : (
                             <>
                             <UserRoundPlus className='size-[18px] text-white' />
-                            <span>Sign In</span></>
+                            <span className='hidden lg:block'>Sign In</span></>
                     )}
                     </button>
             )}

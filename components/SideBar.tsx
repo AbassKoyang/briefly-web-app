@@ -47,7 +47,7 @@ const SideBar = () => {
         <div className='mt-2'>
             <Link className={`${pathname == '/archived' ? 'bg-light-blue' : 'bg-transparent'} w-full py-2 px-3 rounded-lg group hover:bg-light-blue transition-colors duration-300 ease-in-out flex items-center gap-2`} href='/archived'>
             <Archive strokeWidth={2} className={`${pathname == '/archived' ? 'text-black' : 'text-gray-600'} size-[20px] group-hover:text-black transition-colors duration-300 ease-in-out`}/>
-            <p className={`${pathname == '/archived' ? 'text-black' : 'text-gray-600' } text-[16px] group-hover:text-black transition-colors duration-300 ease-in-out font-medium font-raleway`}>Archived</p>
+            <p className={`${pathname == '/archived' ? 'text-black' : 'text-gray-600' } text-[16px] group-hover:text-black transition-colors duration-300 ease-in-out font-medium font-raleway`}>Archive</p>
             </Link>
         </div>
         <div className="mt-2">
