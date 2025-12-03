@@ -3,8 +3,8 @@ import Link from 'next/link';
 
 const EmptyBookmarks = () => {
   return (
-    <div className="w-full mt-6 flex flex-col items-center justify-center h-full">
-    <svg width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div className="w-full h-full flex flex-col items-center justify-center z-[500] absolute top-0 left-0 bg-white/30 backdrop-blur-xs">
+          <svg width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g filter="url(#filter0_d_2_7075)">
     <path d="M75 139C112.003 139 142 109.003 142 72C142 34.9969 112.003 5 75 5C37.9969 5 8 34.9969 8 72C8 109.003 37.9969 139 75 139Z" fill="white"/>
     </g>
@@ -43,9 +43,9 @@ const EmptyBookmarks = () => {
     </clipPath>
     </defs>
     </svg>
-     <h5 className='max-w-[320px] text-center text-[17px] font-semibold font-raleway mt-4'>You've not bookmarked any page yet</h5>
-    <p className='max-w-[280px] text-center text-[12px] font-normal font-nunito-sans text-black/80 mt-2'>Pages you add to bookmark will appear here</p>
-  </div>
+           <h5 className='max-w-[320px] text-center text-[17px] font-semibold font-raleway mt-4'>You've not bookmarked any page yet</h5>
+          <p className='max-w-[280px] text-center text-[12px] font-normal font-nunito-sans text-black/80 mt-2'>Pages you add to bookmark will appear here</p>
+        </div>
   )
 }
 

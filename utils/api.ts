@@ -2,11 +2,13 @@ import { auth, db } from "@/lib/firebase";
 import { BookmarkType, fetchUserBookmarksParamType, fetchUserBookmarksReturnType } from "@/types";
 import { getAuth } from "firebase/auth";
 import { collection, getDocs, limit, orderBy, query, startAfter, where, writeBatch } from "firebase/firestore";
+const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
 export const fetchUserBookmarks = async ({userId, pageParam} : fetchUserBookmarksParamType) : Promise<fetchUserBookmarksReturnType> => {
+    console.log(API_URL);
     try {
 
-    const res = await fetch(`http://localhost:4000/api/bookmarks/${userId}?pageParam=${pageParam}`, 
+    const res = await fetch(`${API_URL}/api/bookmarks/${userId}?pageParam=${pageParam}`, 
         {
             method: 'GET',
         }
@@ -23,7 +25,7 @@ export const fetchUserBookmarks = async ({userId, pageParam} : fetchUserBookmark
 export const fetchArchivedBookmarks = async ({userId, pageParam} : fetchUserBookmarksParamType) : Promise<fetchUserBookmarksReturnType> => {
     try {
 
-    const res = await fetch(`http://localhost:4000/api/bookmarks/${userId}/archived?pageParam=${pageParam}`, 
+    const res = await fetch(`${API_URL}/api/bookmarks/${userId}/archived?pageParam=${pageParam}`, 
         {
             method: 'GET',
         }
@@ -40,7 +42,7 @@ export const fetchArchivedBookmarks = async ({userId, pageParam} : fetchUserBook
 export const fetchPinnedBookmarks = async (userId : string) : Promise<BookmarkType[]> => {
     try {
 
-    const res = await fetch(`http://localhost:4000/api/bookmarks/${userId}/pinned`, 
+    const res = await fetch(`${API_URL}/api/bookmarks/${userId}/pinned`, 
         {
             method: 'GET',
         }
@@ -57,7 +59,7 @@ export const fetchPinnedBookmarks = async (userId : string) : Promise<BookmarkTy
 
 export const incrementViews =  async(id: string) => {
     try {
-        const res = await fetch(`http://localhost:4000/api/bookmarks/${id}/views`, {
+        const res = await fetch(`${API_URL}/api/bookmarks/${id}/views`, {
             method: 'PATCH',
         })
         if(!res.ok) {
@@ -77,7 +79,7 @@ export const incrementViews =  async(id: string) => {
 
 export const pinToTop =  async(id: string) => {
     try {
-        const res = await fetch(`http://localhost:4000/api/bookmarks/${id}/pin`, {
+        const res = await fetch(`${API_URL}/api/bookmarks/${id}/pin`, {
             method: 'PATCH',
         })
         if(!res.ok) {
@@ -97,7 +99,7 @@ export const pinToTop =  async(id: string) => {
 
 export const unPinBookmark =  async(id: string) => {
     try {
-        const res = await fetch(`http://localhost:4000/api/bookmarks/${id}/unpin`, {
+        const res = await fetch(`${API_URL}/api/bookmarks/${id}/unpin`, {
             method: 'PATCH',
         })
         if(!res.ok) {
@@ -116,7 +118,7 @@ export const unPinBookmark =  async(id: string) => {
 }
 export const archiveBookmark =  async(id: string) => {
     try {
-        const res = await fetch(`http://localhost:4000/api/bookmarks/${id}/archive`, {
+        const res = await fetch(`${API_URL}/api/bookmarks/${id}/archive`, {
             method: 'PATCH',
         })
         if(!res.ok) {
@@ -136,7 +138,7 @@ export const archiveBookmark =  async(id: string) => {
 
 export const unarchiveBookmark =  async(id: string) => {
     try {
-        const res = await fetch(`http://localhost:4000/api/bookmarks/${id}/unarchive`, {
+        const res = await fetch(`${API_URL}/api/bookmarks/${id}/unarchive`, {
             method: 'PATCH',
         })
         if(!res.ok) {
@@ -153,13 +155,32 @@ export const unarchiveBookmark =  async(id: string) => {
         console.error("Error unarchiving bookmark", error);
     }
 }
+export const deleteBoomark =  async(id: string) => {
+    try {
+        const res = await fetch(`${API_URL}/api/bookmarks/${id}`, {
+            method: 'DELETE',
+        })
+        if(!res.ok) {
+            console.error("Error deleting bookmark");
+            return;
+        }
+        const result = await res.json();
+        if(result.success) {
+            console.log("Bookmark deleted successfully");
+            console.log(result);
+        }
+        return result;
+    } catch (error) {
+        console.error("Error deleting bookmark", error);
+    }
+}
 export const bookmarkPage = async (url: string, userId: string) => {
     const user = auth.currentUser;
 
     if (user) {
     const idToken = await user.getIdToken();
     console.log("ID Token:", idToken);
-    const res = await fetch("http://localhost:4000/api/bookmarks", {
+    const res = await fetch(`${API_URL}/api/bookmarks`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

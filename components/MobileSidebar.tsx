@@ -1,6 +1,5 @@
 'use client';
 import { useAuth } from '@/hooks/auth';
-import { useBookmarkContext } from '@/hooks/bookmark-context';
 import { useTagContext } from '@/hooks/tag';
 import { useFetchArchivedBookmarks, useFetchBookmarks } from '@/utils/queries';
 import { Archive, House } from 'lucide-react';
@@ -8,15 +7,22 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useMemo, useState } from 'react';
-const SideBar = () => {
+const MobileSideBar = () => {
     const pathname = usePathname();
     const {user} = useAuth();
-    const {tags, setTags} = useTagContext();
-    const {bookmarks} = useBookmarkContext();
+    const {tags, setTags} = useTagContext()
+    const {
+      data,
+      fetchNextPage,
+      hasNextPage,
+      isFetchingNextPage,
+      isLoading,
+      isError,
+      } = useFetchBookmarks(user?.uid || '');
 
       const allBookmarks = useMemo(() => {
-        return bookmarks;
-        }, [bookmarks]);
+          return data?.pages.flatMap(page => page.bookmarks) ;
+        }, [data]);
 
         const uniqueTags = [...new Set(allBookmarks?.map((bm) => bm.tags).flat())];
         const flattenedTags = allBookmarks?.map((bm) => bm.tags).flat()
@@ -33,7 +39,7 @@ const SideBar = () => {
           console.log('selected tags:', tags);
 
   return (
-    <div className='hidden lg:block w-[20%] h-full p-4 bg-white border-r border-gray-300'>
+    <div className='w-[85%] z-30 h-full p-4 bg-white border-r border-gray-300'>
         <div className="flex items-center justify-start gap-2">
             <Link className='flex items-center justify-center size-[35px] rounded-md overflow-hidden shadow-xs' href='/'><Image src='/icon-512.png' width={35} height={35} alt='Logo' className='object-center object-cover size-full'/></Link>
             <h4 className='text-[24px] font-semibold text-dark-blue font-raleway'>Briefly</h4>
@@ -76,4 +82,4 @@ const SideBar = () => {
   )
 }
 
-export default SideBar
+export default MobileSideBar

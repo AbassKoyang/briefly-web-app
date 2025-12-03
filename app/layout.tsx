@@ -8,6 +8,8 @@ import { Toaster } from "@/components/ui/sonner"
 import QueryProvider from "@/lib/tanstackConfig";
 import { SearchProvider } from "@/hooks/search";
 import Form from "@/components/Form";
+import { TagProvider } from "@/hooks/tag";
+import { BookMarksProvider } from "@/hooks/bookmark-context";
 
 
 const geistSans = Geist({
@@ -57,14 +59,18 @@ export default function RootLayout({
       >
         <AuthProvider>
           <QueryProvider>
+            <BookMarksProvider>
+            <TagProvider>
             <SearchProvider>
             <SideBar />
-            <section className="min-h-full w-[80%] bg-light-blue">
+            <section className="min-h-full w-full lg:w-[80%] bg-light-blue">
               <NavBar />
             {children}
             </section>
             <Toaster/>
             </SearchProvider>
+            </TagProvider>
+            </BookMarksProvider>
           </QueryProvider>
         </AuthProvider>
       </body>

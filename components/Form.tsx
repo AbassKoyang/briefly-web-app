@@ -42,8 +42,11 @@ const Form = ({isopen, closeModal}: {isopen: boolean, closeModal: () => void}) =
    <>
    {isopen && ( <div className={`fixed w-[100vw] h-[100vh] top-0 left-0 bg-white/30 backdrop-blur-xs flex items-center justify-center z-[1000]`}>
         <form onSubmit={handleSubmit} ref={containerRef} className="w-full max-w-[320px] bg-white p-4 rounded-lg border border-gray-400">
-        <input required type="url" className="w-full h-[45px] px-2 text-sm text-gray-800 font-nunito-sans placeholder:text-gray-500 border-1 rounded-md stroke-0 outline-0 transition-all duration-200 ease-in-out" placeholder='Enter a valid url..'/>
-        <button type='submit' className='w-full py-3 rounded-md bg-dark-blue text-white text-sm font-raleway font-semibold mt-2'>Submit {loading ? <LoaderCircle className='size-[18px] text-white animate-spin' /> : null}</button>
+        <input name='url' required type="url" className="w-full h-[45px] px-2 text-sm text-gray-800 font-nunito-sans placeholder:text-gray-500 border-1 rounded-md stroke-0 outline-0 transition-all duration-200 ease-in-out" placeholder='Enter a valid url..'/>
+        <button type='submit' className='w-full py-3 rounded-md bg-dark-blue text-white text-sm font-raleway font-semibold mt-2 cursor-pointer flex items-center justify-center gap-2'>{loading ? <>
+        <span>Bookmarking...</span>
+        <LoaderCircle className='size-[18px] text-white animate-spin' />
+        </> : <span>Bookmark</span>}</button>
         </form>
     </div>
    )}

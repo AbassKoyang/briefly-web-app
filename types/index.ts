@@ -15,7 +15,7 @@ export type BookmarkType = {
     userId: string;
     favicon: string;
     createdAt: number;
-    pinned: false;
+    pinned: boolean;
     lastViewed: number;
     views: number;
     archived: boolean;

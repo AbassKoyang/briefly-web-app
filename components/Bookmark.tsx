@@ -1,9 +1,9 @@
 
 'use client';
 import { BookmarkType } from "@/types"
-import { archiveBookmark, incrementViews, pinToTop, unarchiveBookmark, unPinBookmark } from "@/utils/api";
+import { archiveBookmark, deleteBoomark, incrementViews, pinToTop, unarchiveBookmark, unPinBookmark } from "@/utils/api";
 import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Archive, ArchiveX, Calendar, Clock, Ellipsis, ExternalLink, Eye, Pin } from "lucide-react"
+import { Archive, ArchiveX, Calendar, Clock, Ellipsis, ExternalLink, Eye, LoaderCircle, Pin, PinOff, Trash } from "lucide-react"
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -12,6 +12,12 @@ const Bookmark = ({bookmark} : {bookmark: BookmarkType}) => {
 
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement | null>(null);
+    const [isPinningToTop, setIsPinningToTop] = useState(false);
+    const [isUnpinning, setIsUnpinning] = useState(false);
+    const [isArchiving, setIsArchiving] = useState(false);
+    const [isUnarchiving, setIsUnarchiving] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
           if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
@@ -70,7 +76,8 @@ const Bookmark = ({bookmark} : {bookmark: BookmarkType}) => {
           queryClient.invalidateQueries({ queryKey: ["pinned-bookmarks"] });
         },
         onSuccess: () => {
-            toast.success("Bookmark Pinned")
+            toast.success("Bookmark Pinned");
+            setIsOpen(false);
         }
       });
     // const unPinBookmarkMutation = useMutation({
@@ -127,6 +134,7 @@ const Bookmark = ({bookmark} : {bookmark: BookmarkType}) => {
         onSettled: () => {
           queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
           queryClient.invalidateQueries({ queryKey: ["pinned-bookmarks"] });
+          setIsOpen(false);
         },
       });
 
@@ -154,6 +162,7 @@ const Bookmark = ({bookmark} : {bookmark: BookmarkType}) => {
         },
         onSuccess: () => {
             toast.success("Bookmark removed from Pinned")
+            setIsOpen(false);
         }
       });
 
@@ -184,6 +193,7 @@ const Bookmark = ({bookmark} : {bookmark: BookmarkType}) => {
         },
         onSuccess: () => {
             toast.success("Bookmark Archived")
+            setIsOpen(false);
         }
       });
 
@@ -214,6 +224,35 @@ const Bookmark = ({bookmark} : {bookmark: BookmarkType}) => {
         },
         onSuccess: () => {
             toast.success("Bookmark removed from archived")
+            setIsOpen(false);
+        }
+      });
+
+      const deleteBookmarkMutation = useMutation({
+        mutationFn: (id: string) => deleteBoomark(id),
+        onMutate: async (id: string) => {
+          await queryClient.cancelQueries({ queryKey: ["bookmarks"] });
+          const previous = queryClient.getQueryData(["bookmarks"]);
+      
+          queryClient.setQueryData(["bookmarks"], (old: any) => {
+            if (!old) return old;
+            return {
+              ...old,
+              bookmarks: old.bookmarks.filter((b: BookmarkType) => b.id !== id),
+            };
+          });
+      
+          return { previous };
+        },
+        onError: (_err, _id, context: any) => {
+          if (context?.previous) queryClient.setQueryData(["bookmarks"], context.previous);
+        },
+        onSettled: () => {
+          queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
+        },
+        onSuccess: () => {
+          toast.success("Bookmark deleted")
+          setIsOpen(false);
         }
       });
 
@@ -223,20 +262,32 @@ const Bookmark = ({bookmark} : {bookmark: BookmarkType}) => {
         await incrementViewsMutation.mutateAsync(bookmark.id || '');
     }
     const handlePinToTop = async (bookmark: BookmarkType) => {
+      setIsPinningToTop(true);
         await pinToTopMutation.mutateAsync(bookmark.id || '');
+        setIsPinningToTop(false);
     }
     const handleUnPin = async (bookmark: BookmarkType) => {
+        setIsUnpinning(true);
         await unPinBookmarkMutation.mutateAsync(bookmark.id || '');
+        setIsUnpinning(false);
     }
     const handleArchiveBookmark = async (bookmark: BookmarkType) => {
+        setIsArchiving(true);
         await archiveBookmarkMutation.mutateAsync(bookmark.id || '');
+        setIsArchiving(false);
     }
     const handleUnarchiveBookmark = async (bookmark: BookmarkType) => {
+        setIsUnarchiving(true);
         await unarchiveBookmarkMutation.mutateAsync(bookmark.id || '');
+        setIsUnarchiving(false);
     }
-
+    const handleDeleteBookmark = async (bookmark: BookmarkType) => {
+        setIsDeleting(true);
+        await deleteBookmarkMutation.mutateAsync(bookmark.id || '');
+        setIsDeleting(false);
+    }
   return (
-    <div className="w-[320px] p-4 bg-white border-gray-300 border rounded-[10px]">
+    <div className="w-full md:w-[320px] p-4 bg-white border-gray-300 border rounded-[10px]">
             <div className="w-full flex items-start justify-between">
                 <div className="flex gap-3">
                 <div className="size-[40px] rounded-lg overflow-hidden">
@@ -247,36 +298,50 @@ const Bookmark = ({bookmark} : {bookmark: BookmarkType}) => {
                     <p className="text-xs font-nunito-sans text-gray-500 font-normal">{bookmark.subTitle}</p>
                 </div>
                 </div>
-                <button onClick={() => setIsOpen(!isOpen)} className="p-1 bg-white border border-gray-300 rounded-md relative cursor-pointer">
+                <button onClick={() => setIsOpen(true)} className="p-1 bg-white border border-gray-300 rounded-md relative cursor-pointer">
                     <Ellipsis className="size-[20px] text-gray-800 rotate-90" />
                     {isOpen && (
                         <div ref={containerRef} className="absolute bottom-[-110px] right-0 w-[200px] p-2 bg-white border-gray-300 border rounded-[10px] flex flex-col items-center justify-center">
-                        <div onClick={() => handleOpenBookmark(bookmark)} className="w-full flex items-center justify-between pt-1 pb-1.5 px-3  border-b border-gray-400 cursor-pointer">
+                        <div onClick={() => handleOpenBookmark(bookmark)} className="w-full flex items-center justify-between pt-1 pb-1.5 px-3  border-b border-gray-200 cursor-pointer">
                             <p className="text-xs font-raleway text-gray-700 font-medium">Open</p>
                             <ExternalLink className="text-gray-700 size-[12px]" />
                         </div>
                         {bookmark.pinned ? (
-                            <div onClick={() => handleUnPin(bookmark)} className="w-full flex items-center justify-between pt-1.5 pb-1.5 px-3  border-b border-gray-400 cursor-pointer">
+                            <div onClick={() => handleUnPin(bookmark)} className="w-full flex items-center justify-between pt-1.5 pb-1.5 px-3  border-b border-gray-200 cursor-pointer">
                                 <p className="text-xs font-raleway text-gray-700 font-medium">Remove from Pinned</p>
-                                <Pin className="text-gray-700 size-[12px]" />
+                                {isUnpinning ? (<LoaderCircle className="text-gray-700 size-[12px] animate-spin" />) : (
+                                    <PinOff className="text-gray-700 size-[12px]" />
+                                )}
                             </div>
                         ) : (
-                            <div onClick={() => handlePinToTop(bookmark)} className="w-full flex items-center justify-between pt-1.5 pb-1.5 px-3  border-b border-gray-400 cursor-pointer">
+                            <div onClick={() => handlePinToTop(bookmark)} className="w-full flex items-center justify-between pt-1.5 pb-1.5 px-3  border-b border-gray-200 cursor-pointer">
                                 <p className="text-xs font-raleway text-gray-700 font-medium">Pin to Top</p>
-                                <Pin className="text-gray-700 size-[12px]" />
+                                {isPinningToTop ? (<LoaderCircle className="text-gray-700 size-[12px] animate-spin" />) : (
+                                    <Pin className="text-gray-700 size-[12px]" />
+                                )}
                             </div>
                         )}
                         {bookmark.archived ? (
-                            <div onClick={() => handleUnarchiveBookmark(bookmark)} className="w-full flex items-center justify-between pt-1.5 pb-1.5 px-3  cursor-pointer">
+                            <div onClick={() => handleUnarchiveBookmark(bookmark)} className="w-full flex items-center justify-between pt-1.5 pb-1.5 px-3 border-b border-gray-200 cursor-pointer">
                                 <p className="text-xs font-raleway text-gray-700 font-medium">Remove from Archive</p>
-                                <ArchiveX className="text-gray-700 size-[12px]" />
+                                {isUnarchiving ? (<LoaderCircle className="text-gray-700 size-[12px] animate-spin" />) : (
+                                    <ArchiveX className="text-gray-700 size-[12px]" />
+                                )}
                             </div>
                         ) : (
-                            <div onClick={() => handleArchiveBookmark(bookmark)} className="w-full flex items-center justify-between pt-1.5 pb-1.5 px-3 cursor-pointer">
-                                <p className="text-xs font-raleway text-gray-700 font-medium">Archive Bookmark</p>
-                                <Archive className="text-gray-700 size-[12px]" />
+                            <div onClick={() => handleArchiveBookmark(bookmark)} className="w-full flex items-center justify-between pt-1.5 pb-1.5 px-3 border-b border-gray-200 cursor-pointer">
+                                <p className="text-xs font-raleway text-gray-700 font-medium">Archive</p>
+                                {isArchiving ? (<LoaderCircle className="text-gray-700 size-[12px] animate-spin" />) : (
+                                    <Archive className="text-gray-700 size-[12px]" />
+                                )}
                             </div>
                         )}
+                        <div onClick={() => handleDeleteBookmark(bookmark)} className="w-full flex items-center justify-between pt-1.5 pb-1.5 px-3 cursor-pointer">
+                                <p className="text-xs font-raleway text-gray-700 font-medium">Delete</p>
+                                {isDeleting ? (<LoaderCircle className="text-gray-700 size-[12px] animate-spin" />) : (
+                                    <Trash className="text-gray-700 size-[12px]" />
+                                )}
+                            </div>
                     </div>
                     )}
                 </button>

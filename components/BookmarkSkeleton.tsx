@@ -1,7 +1,7 @@
 
 const BookmarkSkeleton = () => {
   return (
-    <div className="w-[320px] p-4 bg-gray-200 border-gray-300 border rounded-[10px]">
+    <div className="w-full md:w-[320px] p-4 bg-gray-200 border-gray-300 border rounded-[10px]">
             <div className="w-full flex items-start justify-between">
                 <div className="flex gap-3">
                 <div className="size-[40px] rounded-lg skeleton"></div>
