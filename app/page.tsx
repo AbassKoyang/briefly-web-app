@@ -7,7 +7,7 @@ import { useAuth } from "@/hooks/auth";
 import { useBookmarkContext } from "@/hooks/bookmark-context";
 import { useSearchContext } from "@/hooks/search";
 import { useTagContext } from "@/hooks/tag";
-import { useFetchBookmarks, useFetchPinnedBookmarks } from "@/utils/queries";
+import { useFetchArchivedBookmarks, useFetchBookmarks, useFetchPinnedBookmarks } from "@/utils/queries";
 import { ArrowDownUp, LoaderCircle, UserRoundPlus } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useMemo } from "react";
@@ -27,6 +27,12 @@ export default function Home() {
     isLoading,
     isError,
     } = useFetchBookmarks(user?.uid || '');
+  const {
+    data:pinnedBookmarks,
+    } = useFetchPinnedBookmarks(user?.uid || '');
+  const {
+    data:archivedBookmarks,
+    } = useFetchArchivedBookmarks(user?.uid || '');
 
     useEffect(() => {
         if (inView && hasNextPage) {
@@ -37,9 +43,10 @@ export default function Home() {
     console.log(data?.pageParams);    
     console.log(data?.pages);    
     const allBookmarks = useMemo(() => {
-        const allBookmarks = data?.pages.flatMap(page => page.bookmarks) ;
+        const allBookmarks = [...new Set(data?.pages.flatMap(page => page.bookmarks).concat(pinnedBookmarks || []).concat(archivedBookmarks?.pages.flatMap(page => page.bookmarks) || []))];
+        console.log(allBookmarks);
         return allBookmarks;
-      }, [data]);
+      }, [data, pinnedBookmarks, archivedBookmarks]);
 
       useEffect(() => {
         setBookmarks(allBookmarks || []);
@@ -67,7 +74,9 @@ export default function Home() {
           if (hasSearch) return matchesSearch;
           if (hasTags) return matchesTags;
         });
-      }, [allBookmarks, searchQuery, tags]);      
+      }, [allBookmarks, searchQuery, tags]);
+      
+      const unpinnedBookmarks = filteredBookmarks?.filter((bm) => bm.pinned === false && bm.archived === false);
     
   return (
     <div className="h-full bg-light-blue p-4 md:p-8 relative">
@@ -95,10 +104,10 @@ export default function Home() {
           <BookmarkSkeleton />
           <BookmarkSkeleton />
         </div>)}
-        {filteredBookmarks && (
+        {unpinnedBookmarks && (
         <div className="w-full h-full max-h-full scrollbar-hide overflow-y-auto flex flex-wrap items-start justify-between gap-5 pb-[100px]">
                 <PinnedBookmarksSection />
-          {filteredBookmarks.map((bm) => (
+          {unpinnedBookmarks.map((bm) => (
             <Bookmark key={bm.id} bookmark={bm} />
           ))}
            <div className='w-full flex items-center justify-center py-3' ref={ref}>
@@ -111,7 +120,7 @@ export default function Home() {
          <p className="font-nunito-sans">Oops, Failed to load bookmarks.</p>
          </div>
         )}
-        {filteredBookmarks && filteredBookmarks.length == 0 && searchQuery !== '' && (
+        {unpinnedBookmarks && unpinnedBookmarks.length == 0 && searchQuery !== '' && (
          <div className='w-full h-full flex flex-col items-center justify-center z-[200] absolute top-0 left-0 bg-white/30 backdrop-blur-xs'>
          <p className="font-nunito-sans">Oops, No result for this search.</p>
          </div>

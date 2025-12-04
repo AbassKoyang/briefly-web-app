@@ -5,6 +5,7 @@ import { useSearchContext } from "@/hooks/search";
 import { useFetchPinnedBookmarks } from "@/utils/queries";
 import Bookmark from "./Bookmark";
 import BookmarkSkeleton from "./BookmarkSkeleton";
+import { Pin } from "lucide-react";
 
 const PinnedBookmarksSection = () => {
     const {user} = useAuth();
@@ -26,13 +27,17 @@ const PinnedBookmarksSection = () => {
         const filteredBookmarks =  filterBookmarks();
 
 
-  return (<>
+  return (<div className="w-full py-4">
+    <div className="flex items-center gap-1 mb-4">
+      <Pin className="size-[14px] text-gray-500"/>
+      <h6 className="text-sm font-medium text-gray-500 font-raleway">Pinned</h6>
+    </div>
     {filteredBookmarks && (
-        <>
+        <div className="w-full h-fit scrollbar-hide overflow-y-auto flex flex-wrap items-start justify-between gap-5 border-b border-gray-400 pb-4">
           {filteredBookmarks.map((bm) => (
             <Bookmark bookmark={bm} />
           ))}
-     </>
+     </div>
      )}
      {isLoading && (
         <div className="w-full h-full max-h-full scrollbar-hide overflow-y-auto flex flex-wrap items-start justify-between gap-5 pb-[100px]">
@@ -40,7 +45,7 @@ const PinnedBookmarksSection = () => {
           <BookmarkSkeleton />
           <BookmarkSkeleton />
         </div>)}
-  </>
+  </div>
 )}
 
 export default PinnedBookmarksSection

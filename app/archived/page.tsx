@@ -107,7 +107,7 @@ export default function Home() {
 
         {filteredBookmarks && filteredBookmarks.length == 0 && searchQuery !== '' && (
         <div className='w-full h-full flex flex-col items-center justify-center z-[200] absolute top-0 left-0 bg-white/30 backdrop-blur-xs'>
-        <p className="font-nunito-sans">Oops, No result for this search.</p>
+        <p className="font-nunito-sans">Oops, No result for this search in archive.</p>
         </div>
         )}
 
